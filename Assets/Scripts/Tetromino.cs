@@ -17,9 +17,7 @@ public struct TetrominoData
 {
     public Tetromino tetromino;
     public Tile tile;
-    public Vector2Int[] cells {
-        get; private set;
-    }
+    public Vector2Int[] cells { get; private set; }
 
     public void Init()
     {
