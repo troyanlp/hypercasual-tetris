@@ -39,7 +39,7 @@ public class Piece : MonoBehaviour
 
     private void Update()
     {
-        this.board.ClearPieceData(this);
+        this.board.Clear(this);
 
         this.lockTime += Time.deltaTime;
 
@@ -72,7 +72,7 @@ public class Piece : MonoBehaviour
             Step();
         }
 
-        this.board.SetPieceData(this);
+        this.board.Set(this);
     }
 
     private void Step()
@@ -89,7 +89,7 @@ public class Piece : MonoBehaviour
 
     private void Lock()
     {
-        this.board.SetPieceData(this);
+        this.board.Set(this);
         this.board.SpawnPiece();
     }
 

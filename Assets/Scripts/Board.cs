@@ -40,10 +40,10 @@ public class Board : MonoBehaviour
         TetrominoData data = this.tetrominoData[random];
 
         this.activePiece.Init(this, this.spawnPosition, data);
-        SetPieceData(this.activePiece);
+        Set(this.activePiece);
     }
 
-    public void SetPieceData(Piece piece)
+    public void Set(Piece piece)
     {
         for(int i = 0; i < piece.cells.Length; i++)
         {
@@ -52,7 +52,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    public void ClearPieceData(Piece piece)
+    public void Clear(Piece piece)
     {
         for (int i = 0; i < piece.cells.Length; i++)
         {
