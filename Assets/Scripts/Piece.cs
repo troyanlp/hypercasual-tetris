@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class Piece : MonoBehaviour
 {
@@ -43,28 +42,29 @@ public class Piece : MonoBehaviour
 
         this.lockTime += Time.deltaTime;
 
-        // Rotation
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Rotate(-1);
-        }else if (Input.GetKeyDown(KeyCode.E))
+        if (CrossPlatformInputManager.GetButtonDown("Rotate"))
         {
             Rotate(1);
-        }
-
-        // Movement
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Move(Vector2Int.left);
-        }else if (Input.GetKeyDown(KeyCode.D))
-        {
-            Move(Vector2Int.right);
-        }else if (Input.GetKeyDown(KeyCode.S))
-        {
-            Move(Vector2Int.down);
-        }else if (Input.GetKeyDown(KeyCode.Space))
+        }else if (CrossPlatformInputManager.GetButtonDown("Drop"))
         {
             HardDrop();
+        }
+
+        if(CrossPlatformInputManager.GetAxis("Vertical") == 1)
+        {
+            Move(Vector2Int.down);
+            CrossPlatformInputManager.SetAxisZero("Vertical");
+        }
+
+        if(CrossPlatformInputManager.GetAxis("Horizontal") == 1)
+        {
+            Move(Vector2Int.right);
+            CrossPlatformInputManager.SetAxisZero("Horizontal");
+        }
+        else if (CrossPlatformInputManager.GetAxis("Horizontal") == -1)
+        {
+            Move(Vector2Int.left);
+            CrossPlatformInputManager.SetAxisZero("Horizontal");
         }
 
         if(Time.time >= this.stepTime)
