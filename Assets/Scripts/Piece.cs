@@ -8,6 +8,7 @@ public class Piece : MonoBehaviour
     public Vector3Int[] cells { get; private set; }
     public Vector3Int position { get; private set; }
     public int rotationIndex { get; private set; }
+    public Color color { get; private set; }
 
     public float stepDelay = 1f;
     public float lockDelay = 0.5f;
@@ -91,6 +92,7 @@ public class Piece : MonoBehaviour
     {
         this.board.Set(this);
         this.board.SpawnPiece();
+        this.board.CheckHappyPieces();
     }
 
     private void HardDrop()

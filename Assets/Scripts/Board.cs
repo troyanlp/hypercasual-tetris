@@ -1,13 +1,31 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections.Generic;
 
 public class Board : MonoBehaviour
 {
     public Tilemap tilemap { get; private set; }
     public Piece activePiece { get; private set; }
+    public List<HappyPiece> happyPieces { get; private set; }
+    public HappyPiece happyPiecePrefab;
     public TetrominoData[] tetrominoData;
+    public Tile[] happyTiles;
     public Vector3Int spawnPosition;
     public Vector2Int boardSize = new Vector2Int(10, 20);
+
+    private string cyanTile = "Cyan";
+    private string cyanHappyTile = "happyCyan";
+    private string greenTile = "Green";
+    private string greenHappyTile = "happyGreen";
+    private string orangeTile = "Orange";
+    private string orangeHappyTile = "happyOrange";
+    private string purpleTile = "Purple";
+    private string purpleHappyTile = "happyPurple";
+    private string redTile = "Red";
+    private string redHappyTile = "happyRed";
+    private string yellowTile = "Yellow";
+    private string yellowHappyTile = "happyYellow";
+
 
     public RectInt Bounds
     {
@@ -22,10 +40,70 @@ public class Board : MonoBehaviour
     {
         this.tilemap = GetComponentInChildren<Tilemap>();
         this.activePiece = GetComponentInChildren<Piece>();
+        this.happyPieces = new List<HappyPiece>();
+        FindHappyPieces();
 
         for(int i = 0; i < this.tetrominoData.Length; i++)
         {
             this.tetrominoData[i].Init();
+        }
+    }
+
+    private void FindHappyPieces()
+    {
+        RectInt bounds = this.Bounds;
+        
+        for(int row = bounds.yMin;  row < bounds.yMax; row++)
+        {
+            for (int col = bounds.xMin; col < bounds.xMax; col++)
+            {
+                Vector3Int position = new Vector3Int(col, row, 0);
+                if (this.tilemap.HasTile(position))
+                {
+                    Tile tile = this.tilemap.GetTile<Tile>(position);
+                    if (tile.ToString().Contains(cyanHappyTile))
+                    {
+                        Debug.Log("CYAN en: " + col + "," + row);
+                        HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
+                        happyPiece.Init(this, position, Color.CYAN, this.happyPieces.Count);
+                        this.happyPieces.Add(happyPiece);
+                    }else if (tile.ToString().Contains(greenHappyTile))
+                    {
+                        Debug.Log("GREEN en: " + col + "," + row);
+                        HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
+                        happyPiece.Init(this, position, Color.GREEN, this.happyPieces.Count);
+                        this.happyPieces.Add(happyPiece);
+                    }
+                    else if (tile.ToString().Contains(orangeHappyTile))
+                    {
+                        Debug.Log("ORANGE en: " + col + "," + row);
+                        HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
+                        happyPiece.Init(this, position, Color.ORANGE, this.happyPieces.Count);
+                        this.happyPieces.Add(happyPiece);
+                    }
+                    else if (tile.ToString().Contains(purpleHappyTile))
+                    {
+                        Debug.Log("PURPLE en: " + col + "," + row);
+                        HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
+                        happyPiece.Init(this, position, Color.PURPLE, this.happyPieces.Count);
+                        this.happyPieces.Add(happyPiece);
+                    }
+                    else if (tile.ToString().Contains(redHappyTile))
+                    {
+                        Debug.Log("RED en: " + col + "," + row);
+                        HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
+                        happyPiece.Init(this, position, Color.RED, this.happyPieces.Count);
+                        this.happyPieces.Add(happyPiece);
+                    }
+                    else if (tile.ToString().Contains(yellowHappyTile))
+                    {
+                        Debug.Log("YELLOW en: " + col + "," + row);
+                        HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
+                        happyPiece.Init(this, position, Color.YELLOW, this.happyPieces.Count);
+                        this.happyPieces.Add(happyPiece);
+                    }
+                }
+            }
         }
     }
 
@@ -47,7 +125,7 @@ public class Board : MonoBehaviour
         }
         else
         {
-
+            Debug.Log("Can't Spawn!");
         }
     }
 
@@ -91,15 +169,108 @@ public class Board : MonoBehaviour
         return true;
     }
 
-    public bool IsSameColor(Color color, Vector3Int position)
+    public void CheckHappyPieces()
     {
-        if (color == this.tilemap.GetColor(position))
+        List<Vector3Int> positionsToRemove = new List<Vector3Int>();
+        List<int> happyIds = new List<int>();
+        foreach (HappyPiece happyPiece in happyPieces)
         {
-            return true;
+            positionsToRemove.AddRange(GetLinePositions(happyPiece.position, happyPiece.color));
+            if (positionsToRemove.Count >= 4)
+            {
+                happyIds.Add(happyPiece.id);
+            }
         }
-        else
+
+        // Remove Happy Pieces
+        if (happyIds.Count > 0)
         {
-            return false;
+            foreach (int id in happyIds) happyPieces.RemoveAll(happyPiece => happyPiece.id == id);
+        }
+
+        // Clear those cells
+        foreach (Vector3Int position in positionsToRemove) this.tilemap.SetTile(position, null);
+    }
+
+    private List<Vector3Int> GetLinePositions(Vector3Int position, Color color)
+    {
+        List<Vector3Int> positionsToRemove = new List<Vector3Int>();
+        // Horizontal
+        positionsToRemove.AddRange(SameColorHorizontalNeighbour(1, position, color));
+        positionsToRemove.AddRange(SameColorHorizontalNeighbour(-1, position, color));
+        if ((positionsToRemove.Count + 1) >= 4) {
+            positionsToRemove.Add(position);
+            return positionsToRemove;
+        } else {
+            positionsToRemove.Clear();
+            // Vertical
+            positionsToRemove.AddRange(SameColorVerticalNeighbour(1, position, color));
+            positionsToRemove.AddRange(SameColorVerticalNeighbour(-1, position, color));
+            if ((positionsToRemove.Count + 1) >= 4)
+            {
+                positionsToRemove.Add(position);
+                return positionsToRemove;
+            }
+            else
+            {
+                return new List<Vector3Int>();
+            }
+        }
+    }
+
+    private List<Vector3Int> SameColorHorizontalNeighbour(int direction, Vector3Int position, Color color)
+    {
+        List<Vector3Int> positionsWithSameColor = new List<Vector3Int>();
+        position.x += direction;
+        while (/*!this.Bounds.Contains((Vector2Int)position) && */this.tilemap.HasTile(position) && AreSameColor(this.tilemap.GetTile<Tile>(position).ToString(), color)){
+            positionsWithSameColor.Add(position);
+            position.x += direction;
+        }
+        return positionsWithSameColor;
+    }
+
+    private List<Vector3Int> SameColorVerticalNeighbour(int direction, Vector3Int position, Color color)
+    {
+        List<Vector3Int> positionsWithSameColor = new List<Vector3Int>();
+        position.y += direction;
+        while (/*!this.Bounds.Contains((Vector2Int)position) &&*/ this.tilemap.HasTile(position) && AreSameColor(this.tilemap.GetTile<Tile>(position).ToString(), color))
+        {
+            positionsWithSameColor.Add(position);
+            position.y += direction;
+        }
+        return positionsWithSameColor;
+    }
+
+    private bool AreSameColor(string tileName, Color color)
+    {
+        switch (color)
+        {
+            case Color.CYAN:
+                if (tileName.Contains(cyanTile)) return true;
+                else return false;
+                break;
+            case Color.GREEN:
+                if (tileName.Contains(greenTile)) return true;
+                else return false;
+                break;
+            case Color.ORANGE:
+                if (tileName.Contains(orangeTile)) return true;
+                else return false;
+                break;
+            case Color.PURPLE:
+                if (tileName.Contains(purpleTile)) return true;
+                else return false;
+                break;
+            case Color.RED:
+                if (tileName.Contains(redTile)) return true;
+                else return false;
+                break;
+            case Color.YELLOW:
+                if (tileName.Contains(yellowTile)) return true;
+                else return false;
+                break;
+            default:
+                return false;
         }
     }
 

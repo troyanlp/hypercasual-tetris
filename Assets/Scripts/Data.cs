@@ -1,8 +1,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Color
+{
+    RED,
+    CYAN,
+    GREEN,
+    YELLOW,
+    ORANGE,
+    PURPLE
+}
 public static class Data
 {
+    // Blue, Yellow, Yellow, Red, Purple, Red, Purple
+    public static int[] level1Pieces = { ((int)Tetromino.I), ((int)Tetromino.O), 
+        ((int)Tetromino.O), ((int)Tetromino.T), ((int)Tetromino.S), ((int)Tetromino.L), 
+        ((int)Tetromino.S) };
+    // Red, Blue, Red, Green, Orange, Blue, Orange
+    public static int[] level2Pieces = { ((int)Tetromino.I), ((int)Tetromino.J),
+    ((int)Tetromino.Z), ((int)Tetromino.T), ((int)Tetromino.O), ((int)Tetromino.J),
+    ((int)Tetromino.O)};
 
     public static readonly float cos = Mathf.Cos(Mathf.PI / 2f);
     public static readonly float sin = Mathf.Sin(Mathf.PI / 2f);
