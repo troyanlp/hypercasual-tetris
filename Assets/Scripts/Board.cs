@@ -36,11 +36,19 @@ public class Board : MonoBehaviour
 
     public void SpawnPiece()
     {
+         
         int random = Random.Range(0, this.tetrominoData.Length-1);
         TetrominoData data = this.tetrominoData[random];
 
         this.activePiece.Init(this, this.spawnPosition, data);
-        Set(this.activePiece);
+        if (IsValidPosition(this.activePiece, this.spawnPosition))
+        {
+            Set(this.activePiece);
+        }
+        else
+        {
+
+        }
     }
 
     public void Set(Piece piece)
