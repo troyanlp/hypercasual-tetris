@@ -83,4 +83,16 @@ public class Board : MonoBehaviour
         return true;
     }
 
+    public bool IsSameColor(Color color, Vector3Int position)
+    {
+        if (color == this.tilemap.GetColor(position))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }
