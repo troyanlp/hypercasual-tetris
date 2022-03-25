@@ -6,9 +6,8 @@ using UnityEngine.UI;
 public class Result : MonoBehaviour
 {
 
-    public Text textUI;
+    public Text textUI { get; private set; }
 
-    // Start is called before the first frame update
     void Start()
     {
         Debug.Log("Start del result text!");
