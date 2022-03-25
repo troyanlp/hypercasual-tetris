@@ -240,14 +240,17 @@ public class Board : MonoBehaviour
     public void CheckHappyPieces()
     {
         List<Vector3Int> positionsToRemove = new List<Vector3Int>();
+        List<Vector3Int> positionsToRemoveFromHappyPiece = new List<Vector3Int>();
         List<int> happyIds = new List<int>();
         foreach (HappyPiece happyPiece in happyPieces)
         {
-            positionsToRemove.AddRange(GetLinePositions(happyPiece.position, happyPiece.color));
-            if (positionsToRemove.Count >= 4)
+            positionsToRemoveFromHappyPiece.AddRange(GetLinePositions(happyPiece.position, happyPiece.color));
+            if (positionsToRemoveFromHappyPiece.Count >= 4)
             {
                 happyIds.Add(happyPiece.id);
+                positionsToRemove.AddRange(positionsToRemoveFromHappyPiece);
             }
+            positionsToRemoveFromHappyPiece.Clear();
         }
 
         // Remove Happy Pieces
@@ -258,6 +261,12 @@ public class Board : MonoBehaviour
 
         // Clear those cells
         foreach (Vector3Int position in positionsToRemove) this.tilemap.SetTile(position, null);
+
+        // Check if the player has won
+        if(happyPieces.Count == 0)
+        {
+            GameManager.Instance.ChangeScene("Win");
+        }
     }
 
     private List<Vector3Int> GetLinePositions(Vector3Int position, Color color)
@@ -290,7 +299,7 @@ public class Board : MonoBehaviour
     {
         List<Vector3Int> positionsWithSameColor = new List<Vector3Int>();
         position.x += direction;
-        while (/*!this.Bounds.Contains((Vector2Int)position) && */this.tilemap.HasTile(position) && AreSameColor(this.tilemap.GetTile<Tile>(position).ToString(), color)){
+        while (this.tilemap.HasTile(position) && AreSameColor(this.tilemap.GetTile<Tile>(position).ToString(), color)){
             positionsWithSameColor.Add(position);
             position.x += direction;
         }
@@ -301,7 +310,7 @@ public class Board : MonoBehaviour
     {
         List<Vector3Int> positionsWithSameColor = new List<Vector3Int>();
         position.y += direction;
-        while (/*!this.Bounds.Contains((Vector2Int)position) &&*/ this.tilemap.HasTile(position) && AreSameColor(this.tilemap.GetTile<Tile>(position).ToString(), color))
+        while (this.tilemap.HasTile(position) && AreSameColor(this.tilemap.GetTile<Tile>(position).ToString(), color))
         {
             positionsWithSameColor.Add(position);
             position.y += direction;

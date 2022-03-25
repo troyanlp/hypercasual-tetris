@@ -95,7 +95,6 @@ public class Piece : MonoBehaviour
         this.board.Set(this);
         this.board.SpawnPiece();
         this.board.CheckHappyPieces();
-        
     }
 
     private void HardDrop()
