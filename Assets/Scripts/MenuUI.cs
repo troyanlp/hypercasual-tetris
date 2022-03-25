@@ -13,6 +13,9 @@ public class MenuUI : MonoBehaviour
         else if (CrossPlatformInputManager.GetButtonDown("Level2"))
         {
             GameManager.Instance.ChangeScene("Level2");
+        } else if (CrossPlatformInputManager.GetButtonDown("Menu"))
+        {
+            GameManager.Instance.ChangeScene("Menu");
         }
     }
 }
