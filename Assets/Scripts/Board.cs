@@ -62,7 +62,7 @@ public class Board : MonoBehaviour
     {
         Debug.Log("Start del Board");
 
-        this.tilemap = GetComponentInChildren<Tilemap>();
+        BuildTilemapForLevel();
         this.activePiece = GetComponentInChildren<Piece>();
         this.happyPieces = new List<HappyPiece>();
         this.tetrominoData = new List<TetrominoData>();
@@ -72,17 +72,6 @@ public class Board : MonoBehaviour
 
         SpawnPiece();
     }
-
-    /*
-     // Blue, Yellow, Yellow, Red, Purple, Red, Purple
-    public static int[] level1Pieces = { ((int)Tetromino.I), ((int)Tetromino.O), 
-        ((int)Tetromino.O), ((int)Tetromino.T), ((int)Tetromino.S), ((int)Tetromino.L), 
-        ((int)Tetromino.S) };
-    // Red, Blue, Red, Green, Orange, Blue, Orange
-    public static int[] level2Pieces = { ((int)Tetromino.I), ((int)Tetromino.J),
-    ((int)Tetromino.Z), ((int)Tetromino.T), ((int)Tetromino.O), ((int)Tetromino.J),
-    ((int)Tetromino.O)};
-     */
 
     private void BuildTetronimoForLevel()
     {
@@ -113,6 +102,21 @@ public class Board : MonoBehaviour
         }
 
         Debug.Log(this.tetrominoData.ToString());
+    }
+
+    private void BuildTilemapForLevel()
+    {
+        int level = GameManager.Instance.currentScreen.Equals(Screen.LEVEL1) ? 1 : 2;
+        Tilemap[] tilemaps = GetComponentsInChildren<Tilemap>();
+        if (level == 1)
+        {
+            this.tilemap = tilemaps[0];
+            tilemaps[1].gameObject.SetActive(false);
+        } else if(level == 2)
+        {
+            this.tilemap = tilemaps[1];
+            tilemaps[0].gameObject.SetActive(false);
+        }
     }
 
     private void FindHappyPieces()
@@ -177,9 +181,6 @@ public class Board : MonoBehaviour
 
     public void SpawnPiece()
     {
-
-        //int random = Random.Range(0, this.tetrominoData.Length-1);
-        //TetrominoData data = this.tetrominoData[random];
         TetrominoData data = this.tetrominoData[currentPiece];
         currentPiece++;
         if (currentPiece == this.tetrominoData.Count) currentPiece = 0;
