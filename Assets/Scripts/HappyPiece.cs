@@ -10,6 +10,12 @@ public class HappyPiece : MonoBehaviour
     public int id { get; private set; }
     public Color color { get; private set; }
 
+    public void Awake()
+    {
+        Debug.Log("Awake Happy Piece");
+
+    }
+
     public void Init(Board board, Vector3Int position, Color color, int id)
     {
         this.board = board;

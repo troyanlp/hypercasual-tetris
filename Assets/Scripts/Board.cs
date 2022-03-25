@@ -38,7 +38,7 @@ public class Board : MonoBehaviour
 
     private void Awake()
     {
-        this.tilemap = GetComponentInChildren<Tilemap>();
+        /*this.tilemap = GetComponentInChildren<Tilemap>();
         this.activePiece = GetComponentInChildren<Piece>();
         this.happyPieces = new List<HappyPiece>();
         FindHappyPieces();
@@ -46,7 +46,11 @@ public class Board : MonoBehaviour
         for(int i = 0; i < this.tetrominoData.Length; i++)
         {
             this.tetrominoData[i].Init();
-        }
+        }*/
+        //DontDestroyOnLoad(gameObject);
+        Debug.Log("Awake del Board");
+        //GameManager.Instance.board = this;
+
     }
 
     private void FindHappyPieces()
@@ -105,10 +109,27 @@ public class Board : MonoBehaviour
                 }
             }
         }
+
+        Debug.Log("End of FindHappyPieces");
     }
 
     void Start()
     {
+        Debug.Log("Start del Board");
+
+        //if (!GameManager.Instance.inGame) return;
+
+        this.tilemap = GetComponentInChildren<Tilemap>();
+        this.activePiece = GetComponentInChildren<Piece>();
+        //this.happyPiecePrefab = (HappyPiece)Resources.Load("pPrefabs/HappyPiece", typeof(GameObject));
+        this.happyPieces = new List<HappyPiece>();
+        FindHappyPieces();
+
+        for (int i = 0; i < this.tetrominoData.Length; i++)
+        {
+            this.tetrominoData[i].Init();
+        }
+
         SpawnPiece();
     }
 
@@ -126,6 +147,7 @@ public class Board : MonoBehaviour
         else
         {
             Debug.Log("Can't Spawn!");
+            GameManager.Instance.ChangeScene("Lose");
         }
     }
 
@@ -248,27 +270,21 @@ public class Board : MonoBehaviour
             case Color.CYAN:
                 if (tileName.Contains(cyanTile)) return true;
                 else return false;
-                break;
             case Color.GREEN:
                 if (tileName.Contains(greenTile)) return true;
                 else return false;
-                break;
             case Color.ORANGE:
                 if (tileName.Contains(orangeTile)) return true;
                 else return false;
-                break;
             case Color.PURPLE:
                 if (tileName.Contains(purpleTile)) return true;
                 else return false;
-                break;
             case Color.RED:
                 if (tileName.Contains(redTile)) return true;
                 else return false;
-                break;
             case Color.YELLOW:
                 if (tileName.Contains(yellowTile)) return true;
                 else return false;
-                break;
             default:
                 return false;
         }

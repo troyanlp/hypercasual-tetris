@@ -1,26 +1,18 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityStandardAssets.CrossPlatformInput;
 
 public class MenuUI : MonoBehaviour
 {
 
-    void Awake()
-    {
-        
-    }
-
-    private void Start()
-    {
-        
-    }
-
     void Update()
     {
-        if (CrossPlatformInputManager.GetButtonDown("Play"))
+        if (CrossPlatformInputManager.GetButtonDown("Level1"))
         {
-            Debug.Log("Cambiando de escena!");
-            SceneManager.LoadScene("Game");
+            GameManager.Instance.ChangeScene("Level1");
+        }
+        else if (CrossPlatformInputManager.GetButtonDown("Level2"))
+        {
+            GameManager.Instance.ChangeScene("Level2");
         }
     }
 }

@@ -39,6 +39,8 @@ public class Piece : MonoBehaviour
 
     private void Update()
     {
+        //if (!GameManager.Instance.inGame) return;
+        
         this.board.Clear(this);
 
         this.lockTime += Time.deltaTime;
@@ -93,6 +95,7 @@ public class Piece : MonoBehaviour
         this.board.Set(this);
         this.board.SpawnPiece();
         this.board.CheckHappyPieces();
+        
     }
 
     private void HardDrop()
