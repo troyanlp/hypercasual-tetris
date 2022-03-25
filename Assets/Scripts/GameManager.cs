@@ -19,7 +19,7 @@ public enum GameStatus
 
 public class GameManager : MonoBehaviour
 {
-    private Screen currentScreen;
+    public Screen currentScreen;
     public GameStatus status;
 
     public Board board;

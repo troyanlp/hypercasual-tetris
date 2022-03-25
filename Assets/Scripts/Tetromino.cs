@@ -20,6 +20,14 @@ public struct TetrominoData
     public Vector2Int[] cells { get; private set; }
     public Vector2Int[,] wallKicks { get; private set; }
 
+    public TetrominoData(Tetromino tetromino, Tile tile, Vector2Int[] cells, Vector2Int[,] wallKicks)
+    {
+        this.tetromino = tetromino;
+        this.tile = tile;
+        this.cells = cells;
+        this.wallKicks = wallKicks;
+    }
+
     public void Init()
     {
         this.cells = Data.Cells[this.tetromino];

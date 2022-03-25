@@ -8,24 +8,31 @@ public class Board : MonoBehaviour
     public Piece activePiece { get; private set; }
     public List<HappyPiece> happyPieces { get; private set; }
     public HappyPiece happyPiecePrefab;
-    public TetrominoData[] tetrominoData;
+    public List<TetrominoData> tetrominoData { get; private set; }
     public Tile[] happyTiles;
+    public Tile greenTile;
+    public Tile orangeTile;
+    public Tile purpleTile;
+    public Tile redTile;
+    public Tile yellowTile;
+    public Tile cyanTile;
     public Vector3Int spawnPosition;
     public Vector2Int boardSize = new Vector2Int(10, 20);
 
-    private string cyanTile = "Cyan";
-    private string cyanHappyTile = "happyCyan";
-    private string greenTile = "Green";
-    private string greenHappyTile = "happyGreen";
-    private string orangeTile = "Orange";
-    private string orangeHappyTile = "happyOrange";
-    private string purpleTile = "Purple";
-    private string purpleHappyTile = "happyPurple";
-    private string redTile = "Red";
-    private string redHappyTile = "happyRed";
-    private string yellowTile = "Yellow";
-    private string yellowHappyTile = "happyYellow";
+    private string cyanTileName = "Cyan";
+    private string cyanHappyTileName = "happyCyan";
+    private string greenTileName = "Green";
+    private string greenHappyTileName = "happyGreen";
+    private string orangeTileName = "Orange";
+    private string orangeHappyTileName = "happyOrange";
+    private string purpleTileName = "Purple";
+    private string purpleHappyTileName = "happyPurple";
+    private string redTileName = "Red";
+    private string redHappyTileName = "happyRed";
+    private string yellowTileName = "Yellow";
+    private string yellowHappyTileName = "happyYellow";
 
+    private int currentPiece;
 
     public RectInt Bounds
     {
@@ -47,10 +54,65 @@ public class Board : MonoBehaviour
         {
             this.tetrominoData[i].Init();
         }*/
-        //DontDestroyOnLoad(gameObject);
         Debug.Log("Awake del Board");
-        //GameManager.Instance.board = this;
 
+    }
+
+    void Start()
+    {
+        Debug.Log("Start del Board");
+
+        this.tilemap = GetComponentInChildren<Tilemap>();
+        this.activePiece = GetComponentInChildren<Piece>();
+        this.happyPieces = new List<HappyPiece>();
+        this.tetrominoData = new List<TetrominoData>();
+        FindHappyPieces();
+
+        BuildTetronimoForLevel();
+
+        SpawnPiece();
+    }
+
+    /*
+     // Blue, Yellow, Yellow, Red, Purple, Red, Purple
+    public static int[] level1Pieces = { ((int)Tetromino.I), ((int)Tetromino.O), 
+        ((int)Tetromino.O), ((int)Tetromino.T), ((int)Tetromino.S), ((int)Tetromino.L), 
+        ((int)Tetromino.S) };
+    // Red, Blue, Red, Green, Orange, Blue, Orange
+    public static int[] level2Pieces = { ((int)Tetromino.I), ((int)Tetromino.J),
+    ((int)Tetromino.Z), ((int)Tetromino.T), ((int)Tetromino.O), ((int)Tetromino.J),
+    ((int)Tetromino.O)};
+     */
+
+    private void BuildTetronimoForLevel()
+    {
+        int level = GameManager.Instance.currentScreen.Equals(Screen.LEVEL1) ? 1 : 2;
+        this.currentPiece = 0;
+        if(level == 1)
+        {
+            this.tetrominoData.Add(new TetrominoData(Tetromino.I, cyanTile, Data.Cells[Tetromino.I], Data.WallKicks[Tetromino.I]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.O, yellowTile, Data.Cells[Tetromino.O], Data.WallKicks[Tetromino.O]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.O, yellowTile, Data.Cells[Tetromino.O], Data.WallKicks[Tetromino.O]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.T, redTile, Data.Cells[Tetromino.T], Data.WallKicks[Tetromino.T]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.S, purpleTile, Data.Cells[Tetromino.S], Data.WallKicks[Tetromino.S]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.L, redTile, Data.Cells[Tetromino.L], Data.WallKicks[Tetromino.L]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.S, purpleTile, Data.Cells[Tetromino.S], Data.WallKicks[Tetromino.S]));
+        }else if(level == 2)
+        {
+            this.tetrominoData.Add(new TetrominoData(Tetromino.I, redTile, Data.Cells[Tetromino.I], Data.WallKicks[Tetromino.I]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.J, cyanTile, Data.Cells[Tetromino.J], Data.WallKicks[Tetromino.J]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.Z, redTile, Data.Cells[Tetromino.Z], Data.WallKicks[Tetromino.Z]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.T, greenTile, Data.Cells[Tetromino.T], Data.WallKicks[Tetromino.T]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.O, orangeTile, Data.Cells[Tetromino.O], Data.WallKicks[Tetromino.O]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.J, cyanTile, Data.Cells[Tetromino.J], Data.WallKicks[Tetromino.J]));
+            this.tetrominoData.Add(new TetrominoData(Tetromino.O, orangeTile, Data.Cells[Tetromino.O], Data.WallKicks[Tetromino.O]));
+        }
+        for (int i = 0; i < this.tetrominoData.Count; i++)
+        {
+            this.tetrominoData[i].Init();
+        }
+
+        Debug.Log(this.tetrominoData.ToString());
     }
 
     private void FindHappyPieces()
@@ -65,41 +127,41 @@ public class Board : MonoBehaviour
                 if (this.tilemap.HasTile(position))
                 {
                     Tile tile = this.tilemap.GetTile<Tile>(position);
-                    if (tile.ToString().Contains(cyanHappyTile))
+                    if (tile.ToString().Contains(cyanHappyTileName))
                     {
                         Debug.Log("CYAN en: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.CYAN, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
-                    }else if (tile.ToString().Contains(greenHappyTile))
+                    }else if (tile.ToString().Contains(greenHappyTileName))
                     {
                         Debug.Log("GREEN en: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.GREEN, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
                     }
-                    else if (tile.ToString().Contains(orangeHappyTile))
+                    else if (tile.ToString().Contains(orangeHappyTileName))
                     {
                         Debug.Log("ORANGE en: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.ORANGE, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
                     }
-                    else if (tile.ToString().Contains(purpleHappyTile))
+                    else if (tile.ToString().Contains(purpleHappyTileName))
                     {
                         Debug.Log("PURPLE en: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.PURPLE, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
                     }
-                    else if (tile.ToString().Contains(redHappyTile))
+                    else if (tile.ToString().Contains(redHappyTileName))
                     {
                         Debug.Log("RED en: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.RED, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
                     }
-                    else if (tile.ToString().Contains(yellowHappyTile))
+                    else if (tile.ToString().Contains(yellowHappyTileName))
                     {
                         Debug.Log("YELLOW en: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
@@ -113,31 +175,15 @@ public class Board : MonoBehaviour
         Debug.Log("End of FindHappyPieces");
     }
 
-    void Start()
-    {
-        Debug.Log("Start del Board");
-
-        //if (!GameManager.Instance.inGame) return;
-
-        this.tilemap = GetComponentInChildren<Tilemap>();
-        this.activePiece = GetComponentInChildren<Piece>();
-        //this.happyPiecePrefab = (HappyPiece)Resources.Load("pPrefabs/HappyPiece", typeof(GameObject));
-        this.happyPieces = new List<HappyPiece>();
-        FindHappyPieces();
-
-        for (int i = 0; i < this.tetrominoData.Length; i++)
-        {
-            this.tetrominoData[i].Init();
-        }
-
-        SpawnPiece();
-    }
-
     public void SpawnPiece()
     {
-         
-        int random = Random.Range(0, this.tetrominoData.Length-1);
-        TetrominoData data = this.tetrominoData[random];
+
+        //int random = Random.Range(0, this.tetrominoData.Length-1);
+        //TetrominoData data = this.tetrominoData[random];
+        TetrominoData data = this.tetrominoData[currentPiece];
+        currentPiece++;
+        if (currentPiece == this.tetrominoData.Count) currentPiece = 0;
+        Debug.Log("Current Piece = " + currentPiece);
 
         this.activePiece.Init(this, this.spawnPosition, data);
         if (IsValidPosition(this.activePiece, this.spawnPosition))
@@ -268,22 +314,22 @@ public class Board : MonoBehaviour
         switch (color)
         {
             case Color.CYAN:
-                if (tileName.Contains(cyanTile)) return true;
+                if (tileName.Contains(cyanTileName)) return true;
                 else return false;
             case Color.GREEN:
-                if (tileName.Contains(greenTile)) return true;
+                if (tileName.Contains(greenTileName)) return true;
                 else return false;
             case Color.ORANGE:
-                if (tileName.Contains(orangeTile)) return true;
+                if (tileName.Contains(orangeTileName)) return true;
                 else return false;
             case Color.PURPLE:
-                if (tileName.Contains(purpleTile)) return true;
+                if (tileName.Contains(purpleTileName)) return true;
                 else return false;
             case Color.RED:
-                if (tileName.Contains(redTile)) return true;
+                if (tileName.Contains(redTileName)) return true;
                 else return false;
             case Color.YELLOW:
-                if (tileName.Contains(yellowTile)) return true;
+                if (tileName.Contains(yellowTileName)) return true;
                 else return false;
             default:
                 return false;
