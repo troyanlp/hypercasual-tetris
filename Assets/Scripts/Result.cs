@@ -10,7 +10,6 @@ public class Result : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Start del result text!");
         textUI = GetComponentInChildren<Text>();
     }
 

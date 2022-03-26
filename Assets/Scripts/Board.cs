@@ -45,23 +45,10 @@ public class Board : MonoBehaviour
 
     private void Awake()
     {
-        /*this.tilemap = GetComponentInChildren<Tilemap>();
-        this.activePiece = GetComponentInChildren<Piece>();
-        this.happyPieces = new List<HappyPiece>();
-        FindHappyPieces();
-
-        for(int i = 0; i < this.tetrominoData.Length; i++)
-        {
-            this.tetrominoData[i].Init();
-        }*/
-        Debug.Log("Awake del Board");
-
     }
 
     void Start()
     {
-        Debug.Log("Start del Board");
-
         BuildTilemapForLevel();
         this.activePiece = GetComponentInChildren<Piece>();
         this.happyPieces = new List<HappyPiece>();
@@ -133,41 +120,41 @@ public class Board : MonoBehaviour
                     Tile tile = this.tilemap.GetTile<Tile>(position);
                     if (tile.ToString().Contains(cyanHappyTileName))
                     {
-                        Debug.Log("CYAN en: " + col + "," + row);
+                        Debug.Log("CYAN at: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.CYAN, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
                     }else if (tile.ToString().Contains(greenHappyTileName))
                     {
-                        Debug.Log("GREEN en: " + col + "," + row);
+                        Debug.Log("GREEN at: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.GREEN, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
                     }
                     else if (tile.ToString().Contains(orangeHappyTileName))
                     {
-                        Debug.Log("ORANGE en: " + col + "," + row);
+                        Debug.Log("ORANGE at: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.ORANGE, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
                     }
                     else if (tile.ToString().Contains(purpleHappyTileName))
                     {
-                        Debug.Log("PURPLE en: " + col + "," + row);
+                        Debug.Log("PURPLE at: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.PURPLE, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
                     }
                     else if (tile.ToString().Contains(redHappyTileName))
                     {
-                        Debug.Log("RED en: " + col + "," + row);
+                        Debug.Log("RED at: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.RED, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
                     }
                     else if (tile.ToString().Contains(yellowHappyTileName))
                     {
-                        Debug.Log("YELLOW en: " + col + "," + row);
+                        Debug.Log("YELLOW at: " + col + "," + row);
                         HappyPiece happyPiece = Instantiate(happyPiecePrefab, position, Quaternion.identity);
                         happyPiece.Init(this, position, Color.YELLOW, this.happyPieces.Count);
                         this.happyPieces.Add(happyPiece);
@@ -175,8 +162,6 @@ public class Board : MonoBehaviour
                 }
             }
         }
-
-        Debug.Log("End of FindHappyPieces");
     }
 
     public void SpawnPiece()
@@ -184,7 +169,6 @@ public class Board : MonoBehaviour
         TetrominoData data = this.tetrominoData[currentPiece];
         currentPiece++;
         if (currentPiece == this.tetrominoData.Count) currentPiece = 0;
-        Debug.Log("Current Piece = " + currentPiece);
 
         this.activePiece.Init(this, this.spawnPosition, data);
         if (IsValidPosition(this.activePiece, this.spawnPosition))
@@ -193,7 +177,6 @@ public class Board : MonoBehaviour
         }
         else
         {
-            Debug.Log("Can't Spawn!");
             GameManager.Instance.ChangeScene("Lose");
         }
     }
@@ -243,6 +226,7 @@ public class Board : MonoBehaviour
         List<Vector3Int> positionsToRemove = new List<Vector3Int>();
         List<Vector3Int> positionsToRemoveFromHappyPiece = new List<Vector3Int>();
         List<int> happyIds = new List<int>();
+        // Check the surroundings of each happy piece
         foreach (HappyPiece happyPiece in happyPieces)
         {
             positionsToRemoveFromHappyPiece.AddRange(GetLinePositions(happyPiece.position, happyPiece.color));
@@ -300,6 +284,7 @@ public class Board : MonoBehaviour
     {
         List<Vector3Int> positionsWithSameColor = new List<Vector3Int>();
         position.x += direction;
+        // While the next cell has a same color tile, keep going
         while (this.tilemap.HasTile(position) && AreSameColor(this.tilemap.GetTile<Tile>(position).ToString(), color)){
             positionsWithSameColor.Add(position);
             position.x += direction;

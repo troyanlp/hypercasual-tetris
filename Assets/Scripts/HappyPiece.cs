@@ -12,8 +12,6 @@ public class HappyPiece : MonoBehaviour
 
     public void Awake()
     {
-        Debug.Log("Awake Happy Piece");
-
     }
 
     public void Init(Board board, Vector3Int position, Color color, int id)

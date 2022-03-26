@@ -9,7 +9,6 @@ public enum Screen
     LEVEL2,
     END
 }
-
 public enum GameStatus
 {
     IN_GAME,
@@ -52,8 +51,6 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         currentScreen = Screen.MENU;
         inGame = false;
-        status = GameStatus.IN_GAME;
-        //this.board.gameObject.SetActive(false);
     }
 
     public void ChangeScene(string scene)
@@ -64,15 +61,12 @@ public class GameManager : MonoBehaviour
             AlignStatus();
             if (!currentScreen.Equals("Game")) SceneManager.LoadScene("Game");
             inGame = true;
-            //this.board.gameObject.SetActive(true);
-
         } else if (scene.Equals("Level2"))
         {
             currentScreen = Screen.LEVEL2;
             AlignStatus();
             if(!currentScreen.Equals("Game")) SceneManager.LoadScene("Game");
             inGame = true;
-            //this.board.gameObject.SetActive(true);
         } else if(scene.Equals("Win") || scene.Equals("Lose"))
         {
             status = scene.Equals("Win") ? GameStatus.WIN : GameStatus.LOSE;
@@ -85,7 +79,6 @@ public class GameManager : MonoBehaviour
             currentScreen = Screen.MENU;
             if (!currentScreen.Equals("Menu")) SceneManager.LoadScene("Menu");
             inGame = false;
-            //this.board.gameObject.SetActive(false);
         }
     }
 
